@@ -1,0 +1,31 @@
+<?php
+// تضمين مكتبة RouterOS API
+require 'routeros-api.php';
+
+// تحميل الإعدادات من ملف config.php
+$config = include('config.php');
+
+// إنشاء اتصال مع MikroTik
+$API = new RouterosAPI();
+
+// التحقق من الاتصال
+if ($API->connect($config['host'], $config['username'], $config['password'], $config['port'])) {
+    // تنفيذ أوامر (مثال: عرض قائمة الواجهات)
+    $API->write('/interface/print');
+    $response = $API->read(false);
+    $interfaces = $API->parseResponse($response);
+
+    // عرض النتائج في صفحة ويب
+    echo "<h1>Interfaces:</h1>";
+    echo "<ul>";
+    foreach ($interfaces as $interface) {
+        echo "<li>{$interface['name']}</li>";
+    }
+    echo "</ul>";
+
+    // إنهاء الاتصال
+    $API->disconnect();
+} else {
+    echo "Unable to connect to MikroTik Router.";
+}
+?>
