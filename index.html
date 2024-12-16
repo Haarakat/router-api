@@ -1,82 +1,15 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحة الاتصال بـ MikroTik Router</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            background-color: #f7f7f7;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            margin-top: 50px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        h1 {
-            color: #333;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        p.error {
-            color: red;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>MikroTik Router</h1>
-        <p>صفحة الاتصال</p>
-        <form id="routerForm">
-            <input type="text" id="ip" placeholder="عنوان الراوتر (IP)" value="192.168.88.1" required>
-            <input type="text" id="username" placeholder="اسم المستخدم" value="api" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <button type="submit">اتصل الآن</button>
-        </form>
-        <p id="errorMsg" class="error" style="display:none;">تعذر الاتصال بالراوتر.</p>
-    </div>
+<?php
+require('routeros_api/routeros_api.class.php'); // تعديل المسار حسب مجلد المكتبة
 
-    <script>
-        document.getElementById('routerForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+$API = new RouterosAPI();
 
-            const ip = document.getElementById('ip').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+if ($API->connect('192.168.88.1', 'api', 'api')) {
+    // جلب بيانات النظام
+    $response = $API->comm('/system/resource/print');
+    print_r($response); // طباعة البيانات
 
-            // Placeholder for API call
-            console.log(`Connecting to IP: ${ip} with User: ${username}`);
-            
-            // Simulate connection failure
-            document.getElementById('errorMsg').style.display = "block";
-        });
-    </script>
-</body>
-</html>
+    $API->disconnect();
+} else {
+    echo "فشل الاتصال بـ MikroTik RouterOS!";
+}
+?>
