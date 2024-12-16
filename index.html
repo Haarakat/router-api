@@ -3,84 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الاتصال براوتر MikroTik</title>
+    <title>صفحة الاتصال بـ MikroTik Router</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f7f7f7;
             text-align: center;
-            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
         }
-        form {
-            background: #fff;
+        .container {
+            margin-top: 50px;
+            background-color: #fff;
             padding: 20px;
-            margin: 50px auto;
-            width: 300px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #333;
         }
         input {
             width: 90%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 5px;
         }
         button {
-            padding: 10px 15px;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
+            background-color: #007BFF;
             color: #fff;
-            font-size: 16px;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
         }
         button:hover {
             background-color: #0056b3;
-            cursor: pointer;
+        }
+        p.error {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <h1>صفحة الاتصال بـ MikroTik Router</h1>
-    <form id="routerForm">
-        <label>عنوان الراوتر (IP):</label>
-        <input type="text" id="router_ip" placeholder="192.168.88.1" required>
-        
-        <label>اسم المستخدم:</label>
-        <input type="text" id="username" placeholder="admin" required>
-        
-        <label>كلمة المرور:</label>
-        <input type="password" id="password" placeholder="password" required>
-        
-        <button type="button" onclick="connectRouter()">اتصل الآن</button>
-    </form>
-
-    <div id="response"></div>
+    <div class="container">
+        <h1>MikroTik Router</h1>
+        <p>صفحة الاتصال</p>
+        <form id="routerForm">
+            <input type="text" id="ip" placeholder="عنوان الراوتر (IP)" value="192.168.88.1" required>
+            <input type="text" id="username" placeholder="اسم المستخدم" value="api" required>
+            <input type="password" id="password" placeholder="كلمة المرور" required>
+            <button type="submit">اتصل الآن</button>
+        </form>
+        <p id="errorMsg" class="error" style="display:none;">تعذر الاتصال بالراوتر.</p>
+    </div>
 
     <script>
-        async function connectRouter() {
-            const ip = document.getElementById('router_ip').value;
+        document.getElementById('routerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const ip = document.getElementById('ip').value;
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // رابط الـ API الخاص بك من GitHub أو استضافة أخرى
-            const apiUrl = "https://raw.githubusercontent.com/USERNAME/REPO/main/router-api.php"; // عدل هذا الرابط
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ ip, username, password }),
-                });
-
-                const data = await response.text();
-                document.getElementById('response').innerHTML = `<p>${data}</p>`;
-            } catch (error) {
-                console.error("حدث خطأ:", error);
-                document.getElementById('response').innerHTML = "<p>تعذر الاتصال بالراوتر.</p>";
-            }
-        }
+            // Placeholder for API call
+            console.log(`Connecting to IP: ${ip} with User: ${username}`);
+            
+            // Simulate connection failure
+            document.getElementById('errorMsg').style.display = "block";
+        });
     </script>
 </body>
 </html>
