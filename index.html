@@ -1,31 +1,86 @@
-<?php
-// تضمين مكتبة RouterOS API
-require 'routeros-api.php';
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاتصال براوتر MikroTik</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin: 50px auto;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>صفحة الاتصال بـ MikroTik Router</h1>
+    <form id="routerForm">
+        <label>عنوان الراوتر (IP):</label>
+        <input type="text" id="router_ip" placeholder="192.168.88.1" required>
+        
+        <label>اسم المستخدم:</label>
+        <input type="text" id="username" placeholder="admin" required>
+        
+        <label>كلمة المرور:</label>
+        <input type="password" id="password" placeholder="password" required>
+        
+        <button type="button" onclick="connectRouter()">اتصل الآن</button>
+    </form>
 
-// تحميل الإعدادات من ملف config.php
-$config = include('config.php');
+    <div id="response"></div>
 
-// إنشاء اتصال مع MikroTik
-$API = new RouterosAPI();
+    <script>
+        async function connectRouter() {
+            const ip = document.getElementById('router_ip').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-// التحقق من الاتصال
-if ($API->connect($config['host'], $config['username'], $config['password'], $config['port'])) {
-    // تنفيذ أوامر (مثال: عرض قائمة الواجهات)
-    $API->write('/interface/print');
-    $response = $API->read(false);
-    $interfaces = $API->parseResponse($response);
+            // رابط الـ API الخاص بك من GitHub أو استضافة أخرى
+            const apiUrl = "https://raw.githubusercontent.com/USERNAME/REPO/main/router-api.php"; // عدل هذا الرابط
 
-    // عرض النتائج في صفحة ويب
-    echo "<h1>Interfaces:</h1>";
-    echo "<ul>";
-    foreach ($interfaces as $interface) {
-        echo "<li>{$interface['name']}</li>";
-    }
-    echo "</ul>";
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ ip, username, password }),
+                });
 
-    // إنهاء الاتصال
-    $API->disconnect();
-} else {
-    echo "Unable to connect to MikroTik Router.";
-}
-?>
+                const data = await response.text();
+                document.getElementById('response').innerHTML = `<p>${data}</p>`;
+            } catch (error) {
+                console.error("حدث خطأ:", error);
+                document.getElementById('response').innerHTML = "<p>تعذر الاتصال بالراوتر.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
